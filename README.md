@@ -81,3 +81,5 @@ To dump `messages` database to local file, edit file
 To set `messages` database from local file, run
 [set-messages.sh](set-messages.sh).
 
+Or use the combined script [copy-data.sh](copy-data.sh)
+

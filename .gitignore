@@ -31,3 +31,4 @@ lib/
 data/
 .DS_Store
 messages.db
+users.db
