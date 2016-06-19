@@ -1,5 +1,7 @@
 'use strict';
 
+const dbSet = require('./db-set');
+
 const dbDump = require('./db-dump');
 
 const signup = require('./signup');
@@ -16,6 +18,7 @@ module.exports = function() {
 
   app.post('/signup', signup(app));
   app.get('/db-dump/:service', dbDump(app));
+  app.post('/db-set', dbSet(app));
 
   app.use(notFound());
   app.use(logger(app));
