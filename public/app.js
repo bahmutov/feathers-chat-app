@@ -8,12 +8,15 @@ const dummyUser = {
 }
 
 // Establish a Socket.io connection
-const socket = io()
+// const socket = io()
 
 // Initialize our Feathers client application through Socket.io
 // with hooks and authentication.
+const rest = feathers.rest('http://localhost:3030');
+
 const app = feathers()
-  .configure(feathers.socketio(socket))
+  .configure(rest.fetch(window.fetch.bind(window)))
+  // .configure(feathers.socketio(socket))
   .configure(feathers.hooks())
   // Use localStorage to store our login token
   .configure(feathers.authentication({
