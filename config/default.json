@@ -1,7 +1,7 @@
 {
   "host": "localhost",
   "port": 3030,
-  "nedb": "../data/",
+  "nedb": "/tmp/",
   "public": "../public/",
   "auth": {
     "token": {
