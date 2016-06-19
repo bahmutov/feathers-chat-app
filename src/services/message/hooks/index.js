@@ -1,5 +1,7 @@
 'use strict';
 
+const restrictToSender = require('./restrict-to-sender');
+
 const auth = require('feathers-authentication').hooks;
 const hooks = require('feathers-hooks');
 
@@ -19,9 +21,9 @@ exports.before = {
   find: [],
   get: [],
   create: [process()],
-  update: [hooks.remove('sentBy')],
-  patch: [hooks.remove('sentBy')],
-  remove: []
+  update: [hooks.remove('sentBy'), restrictToSender()],
+  patch: [hooks.remove('sentBy'), restrictToSender()],
+  remove: [restrictToSender()]
 };
 
 exports.after = {

@@ -18,7 +18,9 @@ const gravatarImage = email => {
   // Gravatar uses MD5 hashes from an email address to get the image
   const hash = crypto.createHash('md5').update(email).digest('hex');
 
-  return `${gravatarUrl}/${hash}?${query}`;
+  const url = `${gravatarUrl}/${hash}?${query}`;
+  console.log('grabbing gravatar for %s from %s', email, url)
+  return url
 };
 
 module.exports = function() {
