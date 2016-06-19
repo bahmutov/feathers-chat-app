@@ -4,6 +4,9 @@
 
 ## About
 
+Example real time chat app with Vue.js frontend, based on tutorial
+[Building Your First Feathers App](http://docs.feathersjs.com/getting-started/readme.html)
+
 This project uses [Feathers](http://feathersjs.com). An open source web framework for building modern real-time applications.
 
 ## Getting Started
@@ -12,13 +15,13 @@ Getting up and running is as easy as 1, 2, 3.
 
 1. Make sure you have [NodeJS](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
 2. Install your dependencies
-    
+
     ```
     cd path/to/feathers-chat-app; npm install
     ```
 
 3. Start your app
-    
+
     ```
     npm start
     ```
