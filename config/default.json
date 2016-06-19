@@ -2,6 +2,7 @@
   "host": "localhost",
   "port": 3030,
   "nedb": "/tmp/",
+  "dumb-db-secret": "ebd2d309-83d2-4857-8b02-b933c480c1a9",
   "public": "../public/",
   "auth": {
     "token": {

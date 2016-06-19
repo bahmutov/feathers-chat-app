@@ -19,8 +19,8 @@ const gravatarImage = email => {
   const hash = crypto.createHash('md5').update(email).digest('hex');
 
   const url = `${gravatarUrl}/${hash}?${query}`;
-  console.log('grabbing gravatar for %s from %s', email, url)
-  return url
+  console.log('grabbing gravatar for %s from %s', email, url);
+  return url;
 };
 
 module.exports = function() {
