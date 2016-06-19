@@ -1,5 +1,7 @@
 'use strict';
 
+const dbDump = require('./db-dump');
+
 const signup = require('./signup');
 
 const handler = require('feathers-errors/handler');
@@ -13,6 +15,8 @@ module.exports = function() {
   const app = this;
 
   app.post('/signup', signup(app));
+  app.get('/db-dump/:service', dbDump(app));
+
   app.use(notFound());
   app.use(logger(app));
   app.use(handler());
