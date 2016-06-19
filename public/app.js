@@ -12,7 +12,7 @@ const dummyUser = {
 
 // Initialize our Feathers client application through Socket.io
 // with hooks and authentication.
-const rest = feathers.rest('http://localhost:3030');
+const rest = feathers.rest(window.location.origin);
 
 const app = feathers()
   .configure(rest.fetch(window.fetch.bind(window)))
