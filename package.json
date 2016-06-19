@@ -31,6 +31,7 @@
     "feathers-errors": "^2.2.0",
     "feathers-hooks": "^1.5.4",
     "feathers-nedb": "^2.3.0",
+    "feathers-nedb-dump": "^1.0.1",
     "feathers-rest": "^1.4.2",
     "feathers-socketio": "^1.4.1",
     "nedb": "^1.8.0",

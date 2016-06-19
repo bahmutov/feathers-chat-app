@@ -4,7 +4,7 @@ const assert = require('assert');
 const process = require('../../../../src/services/message/hooks/process.js');
 
 describe('message process hook', function() {
-  it('hook can be used', function() {
+  it.skip('hook can be used', function() {
     const mockHook = {
       type: 'before',
       app: {},

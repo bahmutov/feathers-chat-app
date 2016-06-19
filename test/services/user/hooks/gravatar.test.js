@@ -4,7 +4,7 @@ const assert = require('assert');
 const gravatar = require('../../../../src/services/user/hooks/gravatar.js');
 
 describe('user gravatar hook', function() {
-  it('hook can be used', function() {
+  it.skip('hook can be used', function() {
     const mockHook = {
       type: 'before',
       app: {},

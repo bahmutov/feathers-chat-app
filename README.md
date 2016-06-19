@@ -64,3 +64,20 @@ Licensed under the [MIT license](LICENSE).
 To deploy to Zeit, need the database files to be in `/tmp` folder.
 Also, Zeit does not support socket.io, switched to using Feathers Rest
 client.
+
+## Dumping and setting database
+
+Each service stores its data in plain file using NeDB. To move / clone / copy
+database between deployments, I am using my middleware
+[feathers-nedb-dump](https://github.com/bahmutov/feathers-nedb-dump).
+
+To dump `messages` database to local file, edit file
+[get-messages.sh](get-messages.sh) and run it.
+
+```text
+./get-messages.sh
+```
+
+To set `messages` database from local file, run
+[set-messages.sh](set-messages.sh).
+

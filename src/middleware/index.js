@@ -1,9 +1,7 @@
 'use strict';
 
-const dbSet = require('./db-set');
-
-const dbDump = require('./db-dump');
-
+const dbSet = require('feathers-nedb-dump').set;
+const dbDump = require('feathers-nedb-dump').get;
 const signup = require('./signup');
 
 const handler = require('feathers-errors/handler');
