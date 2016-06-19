@@ -62,3 +62,5 @@ Licensed under the [MIT license](LICENSE).
 ## Deployment
 
 To deploy to Zeit, need the database files to be in `/tmp` folder.
+Also, Zeit does not support socket.io, switched to using Feathers Rest
+client.
