@@ -7,6 +7,10 @@
 Example real time chat app with Vue.js frontend, based on tutorial
 [Building Your First Feathers App](http://docs.feathersjs.com/getting-started/readme.html)
 
+Read my blog post
+[Immutable deploys with data and testing](https://glebbahmutov.com/blog/immutable-deploys-with-data-and-testing/)
+for differences from the original Feathers Chat app example.
+
 This project uses [Feathers](http://feathersjs.com). An open source web framework for building modern real-time applications.
 
 ## Getting Started
