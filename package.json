@@ -19,7 +19,8 @@
     "test": "npm run jshint && npm run mocha",
     "jshint": "jshint src/. test/. --config",
     "start": "node src/",
-    "mocha": "mocha test/ --recursive"
+    "mocha": "mocha test/ --recursive",
+    "build": "node build.js"
   },
   "dependencies": {
     "body-parser": "^1.15.1",
@@ -40,6 +41,8 @@
     "winston": "^2.2.0"
   },
   "devDependencies": {
+    "browserify": "13.0.1",
+    "insert-module-globals": "7.0.1",
     "jshint": "^2.9.2",
     "mocha": "^2.5.3",
     "request": "^2.72.0"

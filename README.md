@@ -87,3 +87,9 @@ To set `messages` database from local file, run
 
 Or use the combined script [copy-data.sh](copy-data.sh)
 
+## Building single bundle
+
+In order to just run the server we can build single bundle out of all files
+using [node-browserify](https://github.com/substack/node-browserify).
+Run `npm run build` and then get single file `out.js`. To run `node out.js`
+and it does not execute any require calls. See the [build.js](build.js) file.
