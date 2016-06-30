@@ -1,7 +1,7 @@
 {
   "name": "feathers-chat-app-gleb",
   "description": "Example real time chat app with Feathers",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "homepage": "https://github.com/bahmutov/feathers-chat-app",
   "main": "src/",
   "keywords": [
@@ -15,6 +15,11 @@
   "engines": {
     "node": "6"
   },
+  "files": [
+    "config",
+    "public",
+    "src"
+  ],
   "scripts": {
     "test": "npm run jshint && npm run mocha",
     "jshint": "jshint src/. test/. --config",
