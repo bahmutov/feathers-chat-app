@@ -25,7 +25,7 @@
     "jshint": "jshint src/. test/. --config",
     "start": "node src/",
     "mocha": "mocha test/ --recursive",
-    "build": "node build.js"
+    "bundle": "node build.js"
   },
   "dependencies": {
     "@bahmutov/private-foo": "^1.0.0",
