@@ -28,6 +28,7 @@
     "build": "node build.js"
   },
   "dependencies": {
+    "@bahmutov/private-foo": "^1.0.0",
     "body-parser": "^1.15.1",
     "compression": "^1.6.2",
     "cors": "^2.7.1",

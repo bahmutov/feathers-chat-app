@@ -14,6 +14,9 @@ const bodyParser = require('body-parser');
 const middleware = require('./middleware');
 const services = require('./services');
 
+const privateFoo = require('@bahmutov/private-foo');
+console.log('I include', privateFoo);
+
 const app = feathers();
 
 app.configure(configuration(path.join(__dirname, '..')));
