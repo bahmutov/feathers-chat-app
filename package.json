@@ -1,8 +1,8 @@
 {
-  "name": "feathers-chat-app",
+  "name": "feathers-chat-app-gleb",
   "description": "Example real time chat app with Feathers",
   "version": "0.0.0",
-  "homepage": "",
+  "homepage": "https://github.com/bahmutov/feathers-chat-app",
   "main": "src/",
   "keywords": [
     "feathers"
@@ -34,7 +34,6 @@
     "feathers-nedb": "^2.3.0",
     "feathers-nedb-dump": "^1.0.1",
     "feathers-rest": "^1.4.2",
-    "feathers-socketio": "^1.4.1",
     "nedb": "^1.8.0",
     "passport": "^0.3.2",
     "serve-favicon": "^2.3.0",
