@@ -19,7 +19,7 @@ console.log('I include', privateFoo);
 
 const app = feathers();
 
-app.configure(configuration(path.join(__dirname, '..')));
+app.configure(configuration(__dirname));
 
 app.use(compress())
   .options('*', cors())
