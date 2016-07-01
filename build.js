@@ -14,4 +14,4 @@ browserify('./src/index.js', {
     browserField: false,
 })
 .bundle()
-.pipe(fs.createWriteStream('./out.js'))
+.pipe(fs.createWriteStream('./src/out.js'))
