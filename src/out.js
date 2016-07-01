@@ -48004,6 +48004,7 @@ exports.after = {
 };
 
 },{"../../../hooks":505,"./gravatar":517,"feathers-authentication":363,"feathers-hooks":379}],519:[function(require,module,exports){
+(function (global){
 'use strict';
 
 const path = require('path');
@@ -48014,10 +48015,12 @@ const hooks = require('./hooks');
 module.exports = function(){
   const app = this;
 
+  global.stopMockFS()
   const db = new NeDB({
     filename: path.join(app.get('nedb'), 'users.db'),
     autoload: true
   });
+  global.startMockFS()
 
   let options = {
     Model: db,
@@ -48040,10 +48043,19 @@ module.exports = function(){
   userService.after(hooks.after);
 };
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./hooks":518,"feathers-nedb":384,"nedb":446,"path":undefined}],520:[function(require,module,exports){
-require('./src/index')
+(function (global){
 const mockOptions = require('./public-bundle')
 const mock = require('mock-' + 'fs')
-mock(mockOptions)
+// mock(mockOptions)
+global.startMockFS = function startMockFS () {
+  mock(mockOptions)
+}
+global.stopMockFS = function stopMockFS () {
+  mock.restore()
+}
+require('./src/index')
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./public-bundle":502,"./src/index":506}]},{},[520]);
