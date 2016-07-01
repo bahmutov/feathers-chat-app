@@ -24,6 +24,7 @@
     "test": "npm run jshint && npm run mocha",
     "jshint": "jshint src/. test/. --config",
     "start": "node src/",
+    "now-start": "node out.js",
     "mocha": "mocha test/ --recursive",
     "bundle": "node build.js"
   },
