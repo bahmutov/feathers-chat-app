@@ -47,7 +47,10 @@
     "winston": "^2.2.0"
   },
   "devDependencies": {
+    "an-browserify-template": "^1.0.6",
     "browserify": "13.0.1",
+    "glob": "^7.0.5",
+    "htmly": "^1.1.1",
     "insert-module-globals": "7.0.1",
     "jshint": "^2.9.2",
     "mocha": "^2.5.3",

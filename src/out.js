@@ -47563,6 +47563,15 @@ function extend() {
 }
 
 },{}],502:[function(require,module,exports){
+module.exports={
+  "src/public/app.js": "// A placeholder image if the user does not have one\nconst PLACEHOLDER = 'https://placeimg.com/60/60/people';\n\n// An anonymous user if the message does not have that information\nconst dummyUser = {\n  avatar: PLACEHOLDER,\n  email: 'Anonymous'\n}\n\n// Establish a Socket.io connection\n// const socket = io()\n\n// Initialize our Feathers client application through Socket.io\n// with hooks and authentication.\nconst rest = feathers.rest(window.location.origin);\n\nconst app = feathers()\n  .configure(rest.fetch(window.fetch.bind(window)))\n  // .configure(feathers.socketio(socket))\n  .configure(feathers.hooks())\n  // Use localStorage to store our login token\n  .configure(feathers.authentication({\n    storage: window.localStorage\n  }))\n\n  // Get the Feathers services we want to use\nconst userService = app.service('users');\nconst messageService = app.service('messages');\n\nvar vm = new Vue({\n  el: 'body',\n  data: {\n    user: {\n      authenticated: false\n    }\n  },\n\n  created() {\n    app.authenticate().then(() => {\n      this.user.authenticated = true\n    })\n    // On errors we just redirect back to the login page\n    .catch(error => {\n      if (error.code === 401) window.location.href = '/login.html'\n    });\n  }\n})\n\nVue.component('chat-app', {\n  template: '#chat-app-template'\n})\n\nVue.component('user-list', {\n  template: '#user-list-template',\n\n  data() {\n    return {\n      dummyUser: dummyUser,\n      users: []\n    }\n  },\n\n  ready() {\n    // Find all users\n    userService.find().then(page => {\n      this.users = page.data\n    })\n\n    // We will also see when new users get created in real-time\n    userService.on('created', user => {\n      this.users.push(user)\n    })\n  },\n\n  methods: {\n    logout() {\n      app.logout().then(() => {\n        vm.user.authenticated = false\n        window.location.href = '/index.html'\n      })\n    }\n  }\n})\n\nVue.component('message-list', {\n  template: '#message-list-template',\n\n  data () {\n    return {\n      placeholder: PLACEHOLDER,\n      messages: []\n    }\n  },\n\n  ready () {\n    // Find the latest 10 messages. They will come with the newest first\n    // which is why we have to reverse before adding them\n    messageService.find({\n      query: {\n        $sort: {createdAt: -1},\n        $limit: 25\n      }\n    }).then(page => {\n      page.data.reverse()\n      this.messages = page.data\n      this.scrollToBottom()\n    })\n\n    // Listen to created events and add the new message in real-time\n    messageService.on('created', message => {\n      this.messages.push(message)\n      this.newMessage = ''\n      this.scrollToBottom()\n    })\n  },\n\n  methods: {\n    scrollToBottom: () => {\n      vm.$nextTick(() => {\n        const node = vm.$el.getElementsByClassName('chat')[0]\n        node.scrollTop = node.scrollHeight\n      })\n    }\n  }\n})\n\nVue.component('message', {\n  props: ['message', 'index'],\n  template: '#message-template',\n  filters: {\n    moment: date => {\n      return moment(date).format('MMM Do, hh:mm:ss')\n    }\n  }\n})\n\nVue.component('compose-message', {\n  template: '#compose-message-template',\n\n  data () {\n    return {\n      newMessage: ''\n    }\n  },\n\n  methods: {\n    addMessage () {\n      // Create a new message and then clear the input field\n      messageService.create({text: this.newMessage}).then(this.newMessage = '')\n    }\n  }\n})\n",
+  "src/public/chat.html": "<html>\n<head>\n  <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0\"/>\n  <title>Feathers Chat</title>\n  <link rel=\"stylesheet\" href=\"https://cdn.rawgit.com/feathersjs/feathers-chat/v0.1.0/public/base.css\">\n  <link rel=\"stylesheet\" href=\"https://cdn.rawgit.com/feathersjs/feathers-chat/v0.1.0/public/chat.css\">\n</head>\n<body>\n\n\n<chat-app v-if=\"user.authenticated\">\n  <user-list></user-list>\n  <message-list>\n    <compose-message></compose-message>\n  </message-list>\n</chat-app>\n\n\n<template id=\"chat-app-template\">\n  <div id=\"app\" class=\"flex flex-column\">\n    <header class=\"title-bar flex flex-row flex-center\">\n      <div class=\"title-wrapper block center-element\">\n        <img class=\"logo\" src=\"http://feathersjs.com/img/feathers-logo-wide.png\" alt=\"Feathers Logo\">\n        <span class=\"title\">Chat</span>\n      </div>\n    </header>\n    <div class=\"flex flex-row flex-1 clear\">\n\n      <!-- Slots/transclusion (Angular). See http://vuejs.org/guide/components.html#Single-Slot -->\n      <slot></slot>\n\n    </div>\n  </div>\n</template>\n\n\n<template id=\"user-list-template\">\n  <aside class=\"sidebar col col-3 flex flex-column flex-space-between\">\n    <header class=\"flex flex-row flex-center\">\n      <h4 class=\"font-300 text-center\"><span class=\"font-600 online-count\" v-cloak>{{ users.length }}</span> users</h4>\n    </header>\n    <ul class=\"flex flex-column flex-1 list-unstyled user-list\">\n      <li v-for=\"user in users\" track-by=\"$index\" v-cloak>\n        <a class=\"block relative\" href=\"#\">\n          <img :src=\"user.avatar || dummyUser.avatar\" alt=\"\" class=\"avatar\">\n          <span class=\"absolute username\">{{ user.email || dummyUser.email }}</span>\n        </a>\n      </li>\n    </ul>\n    <footer class=\"flex flex-row flex-center\">\n      <a href=\"#\" class=\"logout button button-primary\" @click=\"logout\">Sign Out</a>\n    </footer>\n  </aside>\n</template>\n\n\n<template id=\"message-list-template\">\n  <div class=\"flex flex-column col col-9\">\n    <main class=\"chat flex flex-column flex-1 clear\">\n      <div class=\"message flex flex-row\" v-for=\"message in messages\" track-by=\"$index\" v-cloak>\n        <message :message=message></message>\n      </div>\n    </main>\n\n    <slot></slot>\n\n  </div>\n</template>\n\n\n<template id=\"message-template\">\n  <img :src=\"message.sentBy.avatar || placeholder\" alt=\"{{ message.sentBy.email }}\" class=\"avatar\">\n  <div class=\"message-wrapper\">\n    <p class=\"message-header\">\n      <span class=\"username font-600\">{{ message.email }}</span>\n      <span class=\"sent-date font-300\">{{ message.createdAt | moment }}</span>\n    </p>\n    <p class=\"message-content font-300\">{{ message.text }}</p>\n  </div>\n  </div>\n</template>\n\n\n<template id=\"compose-message-template\">\n  <form class=\"flex flex-row flex-space-between\" id=\"send-message\" v-on:submit.prevent>\n    <input type=\"text\" name=\"text\" class=\"flex flex-1\" v-model=\"newMessage\">\n    <button class=\"button-primary\" type=\"submit\" @click=\"addMessage\">Send</button>\n  </form>\n</template>\n\n\n<script src=\"https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.21/vue.js\"></script>\n<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js\"></script>\n<script src=\"//cdn.rawgit.com/feathersjs/feathers-client/v1.0.0/dist/feathers.js\"></script>\n<!-- <script src=\"/socket.io/socket.io.js\"></script> -->\n<script src=\"app.js\"></script>\n</body>\n</html>\n",
+  "src/public/index.html": "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">\n    <meta name=\"viewport\"\n      content=\"width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0\">\n    <title>Feathers Chat</title>\n    <link rel=\"shortcut icon\" href=\"favicon.ico\">\n    <link rel=\"stylesheet\" href=\"//cdn.rawgit.com/feathersjs/feathers-chat/v0.1.0/public/base.css\">\n    <link rel=\"stylesheet\" href=\"//cdn.rawgit.com/feathersjs/feathers-chat/v0.1.0/public/chat.css\">\n  </head>\n  <body>\n    <main class=\"home container\">\n      <div class=\"row\">\n        <div class=\"col-12 col-8-tablet push-2-tablet text-center\">\n          <img class=\"logo center-item\"\n            src=\"http://feathersjs.com/img/feathers-logo-wide.png\"\n            alt=\"Feathers Logo\">\n          <h3 class=\"title\">Chat</h3>\n        </div>\n      </div>\n      <div class=\"row\">\n        <div class=\"col-12 push-4-tablet col-4-tablet\">\n          <div class=\"row\">\n            <div class=\"col-12\">\n              <a href=\"login.html\" class=\"button button-primary block login\">\n                Login\n              </a>\n            </div>\n          </div>\n          <div class=\"row\">\n            <div class=\"col-12\">\n              <a href=\"signup.html\" class=\"button button-primary block signup\">\n                Signup\n              </a>\n            </div>\n          </div>\n        </div>\n      </div>\n    </main>\n  </body>\n</html>\n",
+  "src/public/login.html": "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">\n    <meta name=\"viewport\"\n      content=\"width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0\">\n    <title>Feathers Chat</title>\n    <link rel=\"shortcut icon\" href=\"favicon.ico\">\n    <link rel=\"stylesheet\" href=\"//cdn.rawgit.com/feathersjs/feathers-chat/v0.1.0/public/base.css\">\n    <link rel=\"stylesheet\" href=\"//cdn.rawgit.com/feathersjs/feathers-chat/v0.1.0/public/chat.css\">\n  </head>\n  <body>\n    <main class=\"login container\">\n      <div class=\"row\">\n        <div class=\"col-12 col-6-tablet push-3-tablet text-center\">\n          <h1 class=\"font-100\">Welcome Back</h1>\n        </div>\n      </div>\n      <div class=\"row\">\n        <div class=\"col-12 col-6-tablet push-3-tablet col-4-desktop push-4-desktop text-center\">\n          <form class=\"form\" method=\"post\" action=\"/auth/local\">\n            <fieldset>\n              <input class=\"block\" type=\"email\" name=\"email\" placeholder=\"email\">\n            </fieldset>\n            <fieldset>\n              <input class=\"block\" type=\"password\" name=\"password\" placeholder=\"password\">\n            </fieldset>\n            <button type=\"submit\" class=\"button button-primary block login\">\n              Login\n            </button>\n          </form>\n        </div>\n      </div>\n    </main>\n  </body>\n</html>\n",
+  "src/public/signup.html": "<html>\n  <head>\n    <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">\n    <meta name=\"viewport\"\n      content=\"width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0\">\n    <title>Feathers Chat</title>\n\n    <link rel=\"shortcut icon\" href=\"img/favicon.png\">\n    <link rel=\"stylesheet\" href=\"//cdn.rawgit.com/feathersjs/feathers-chat/v0.1.0/public/base.css\">\n    <link rel=\"stylesheet\" href=\"//cdn.rawgit.com/feathersjs/feathers-chat/v0.1.0/public/chat.css\">\n  </head>\n  <body>\n    <main class=\"login container\">\n      <div class=\"row\">\n        <div class=\"col-12 col-6-tablet push-3-tablet text-center\">\n          <h1 class=\"font-100\">Create an Account</h1>\n        </div>\n      </div>\n      <div class=\"row\">\n        <div class=\"col-12 col-6-tablet push-3-tablet col-4-desktop push-4-desktop text-center\">\n          <form class=\"form\" method=\"post\" action=\"/signup\">\n            <fieldset>\n              <input class=\"block\" type=\"email\" name=\"email\" placeholder=\"email\">\n            </fieldset>\n            <fieldset>\n              <input class=\"block\" type=\"password\" name=\"password\" placeholder=\"password\">\n            </fieldset>\n            <button type=\"submit\" class=\"button button-primary block signup\">\n              Signup\n            </button>\n          </form>\n        </div>\n      </div>\n    </main>\n  </body>\n</html>\n"
+}
+
+},{}],503:[function(require,module,exports){
 (function (__dirname){
 'use strict';
 
@@ -47604,7 +47613,7 @@ Object.keys(defaults).forEach((key) => {
 app.use(compress())
   .options('*', cors())
   .use(cors())
-  .use(favicon( path.join(app.get('public'), 'favicon.ico') ))
+  // .use(favicon( path.join(app.get('public'), 'favicon.ico') ))
   .use('/', serveStatic( app.get('public') ))
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({ extended: true }))
@@ -47617,7 +47626,7 @@ app.use(compress())
 module.exports = app;
 
 }).call(this,"/Users/irinakous/git/feathers-chat-app/src")
-},{"./config/default":503,"./middleware":506,"./services":511,"@bahmutov/private-foo":1,"body-parser":14,"compression":23,"cors":323,"feathers":391,"feathers-hooks":379,"feathers-rest":387,"path":undefined,"serve-favicon":490}],503:[function(require,module,exports){
+},{"./config/default":504,"./middleware":507,"./services":512,"@bahmutov/private-foo":1,"body-parser":14,"compression":23,"cors":323,"feathers":391,"feathers-hooks":379,"feathers-rest":387,"path":undefined,"serve-favicon":490}],504:[function(require,module,exports){
 module.exports={
   "host": "localhost",
   "port": 3030,
@@ -47633,7 +47642,7 @@ module.exports={
   }
 }
 
-},{}],504:[function(require,module,exports){
+},{}],505:[function(require,module,exports){
 'use strict';
 
 // Add any common hooks you want to share across services in here.
@@ -47648,7 +47657,7 @@ exports.myHook = function(options) {
   };
 };
 
-},{}],505:[function(require,module,exports){
+},{}],506:[function(require,module,exports){
 'use strict';
 
 const app = require('./app');
@@ -47658,7 +47667,7 @@ const server = app.listen(port);
 server.on('listening', () =>
   console.log(`Feathers application started on ${app.get('host')}:${port}`)
 );
-},{"./app":502}],506:[function(require,module,exports){
+},{"./app":503}],507:[function(require,module,exports){
 'use strict';
 
 const dbSet = require('feathers-nedb-dump').set;
@@ -47684,7 +47693,7 @@ module.exports = function() {
   app.use(handler());
 };
 
-},{"./logger":507,"./not-found-handler":508,"./signup":509,"feathers-errors/handler":374,"feathers-nedb-dump":382}],507:[function(require,module,exports){
+},{"./logger":508,"./not-found-handler":509,"./signup":510,"feathers-errors/handler":374,"feathers-nedb-dump":382}],508:[function(require,module,exports){
 'use strict';
 
 // const winston = require('winston');
@@ -47710,7 +47719,7 @@ module.exports = function(app) {
   };
 };
 
-},{}],508:[function(require,module,exports){
+},{}],509:[function(require,module,exports){
 'use strict';
 
 const errors = require('feathers-errors');
@@ -47721,7 +47730,7 @@ module.exports = function() {
   };
 };
 
-},{"feathers-errors":376}],509:[function(require,module,exports){
+},{"feathers-errors":376}],510:[function(require,module,exports){
 'use strict';
 
 module.exports = function(app) {
@@ -47740,7 +47749,7 @@ module.exports = function(app) {
   };
 };
 
-},{}],510:[function(require,module,exports){
+},{}],511:[function(require,module,exports){
 'use strict';
 
 const authentication = require('feathers-authentication');
@@ -47756,7 +47765,7 @@ module.exports = function() {
   app.configure(authentication(config));
 };
 
-},{"feathers-authentication":363}],511:[function(require,module,exports){
+},{"feathers-authentication":363}],512:[function(require,module,exports){
 'use strict';
 const message = require('./message');
 const authentication = require('./authentication');
@@ -47771,7 +47780,7 @@ module.exports = function() {
   app.configure(message);
 };
 
-},{"./authentication":510,"./message":515,"./user":518}],512:[function(require,module,exports){
+},{"./authentication":511,"./message":516,"./user":519}],513:[function(require,module,exports){
 'use strict';
 
 const restrictToSender = require('./restrict-to-sender');
@@ -47810,7 +47819,7 @@ exports.after = {
   remove: []
 };
 
-},{"../../../hooks":504,"./process":513,"./restrict-to-sender":514,"feathers-authentication":363,"feathers-hooks":379}],513:[function(require,module,exports){
+},{"../../../hooks":505,"./process":514,"./restrict-to-sender":515,"feathers-authentication":363,"feathers-hooks":379}],514:[function(require,module,exports){
 'use strict';
 
 // src/services/message/hooks/process.js
@@ -47840,7 +47849,7 @@ module.exports = function(options) {
   };
 };
 
-},{}],514:[function(require,module,exports){
+},{}],515:[function(require,module,exports){
 'use strict';
 
 // src/services/message/hooks/restrict-to-sender.js
@@ -47867,7 +47876,7 @@ module.exports = function(options) {
   };
 };
 
-},{"feathers-errors":376}],515:[function(require,module,exports){
+},{"feathers-errors":376}],516:[function(require,module,exports){
 'use strict';
 
 const path = require('path');
@@ -47904,7 +47913,7 @@ module.exports = function(){
   messageService.after(hooks.after);
 };
 
-},{"./hooks":512,"feathers-nedb":384,"nedb":446,"path":undefined}],516:[function(require,module,exports){
+},{"./hooks":513,"feathers-nedb":384,"nedb":446,"path":undefined}],517:[function(require,module,exports){
 'use strict';
 
 // src/services/user/hooks/gravatar.js
@@ -47939,7 +47948,7 @@ module.exports = function() {
   };
 };
 
-},{"crypto":undefined}],517:[function(require,module,exports){
+},{"crypto":undefined}],518:[function(require,module,exports){
 'use strict';
 
 const gravatar = require('./gravatar');
@@ -47994,7 +48003,7 @@ exports.after = {
   remove: []
 };
 
-},{"../../../hooks":504,"./gravatar":516,"feathers-authentication":363,"feathers-hooks":379}],518:[function(require,module,exports){
+},{"../../../hooks":505,"./gravatar":517,"feathers-authentication":363,"feathers-hooks":379}],519:[function(require,module,exports){
 'use strict';
 
 const path = require('path');
@@ -48031,4 +48040,10 @@ module.exports = function(){
   userService.after(hooks.after);
 };
 
-},{"./hooks":517,"feathers-nedb":384,"nedb":446,"path":undefined}]},{},[505]);
+},{"./hooks":518,"feathers-nedb":384,"nedb":446,"path":undefined}],520:[function(require,module,exports){
+require('./src/index')
+const mockOptions = require('./public-bundle')
+const mock = require('mock-' + 'fs')
+mock(mockOptions)
+
+},{"./public-bundle":502,"./src/index":506}]},{},[520]);

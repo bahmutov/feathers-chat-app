@@ -38,7 +38,7 @@ Object.keys(defaults).forEach((key) => {
 app.use(compress())
   .options('*', cors())
   .use(cors())
-  .use(favicon( path.join(app.get('public'), 'favicon.ico') ))
+  // .use(favicon( path.join(app.get('public'), 'favicon.ico') ))
   .use('/', serveStatic( app.get('public') ))
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({ extended: true }))
