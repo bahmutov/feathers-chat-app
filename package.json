@@ -29,7 +29,8 @@
     "bundle": "node build.js",
     "predeploy": "npm run bundle && node no-deps.js",
     "deploy": "now",
-    "postdeploy": "git checkout package.json"
+    "postdeploy": "git checkout package.json",
+    "plain-deploy": "npm run bundle && now"
   },
   "dependencies": {
     "@bahmutov/private-foo": "^1.0.0",
