@@ -19504,7 +19504,7 @@ function auth() {
 
 auth.hooks = _hooks2.default;
 module.exports = exports['default'];
-}).call(this,"/Users/irinakous/git/feathers-chat-app/node_modules/feathers-authentication/lib")
+}).call(this,"/node_modules/feathers-authentication/lib")
 },{"./hooks":356,"./middleware":365,"./services/local":367,"./services/oauth2":368,"./services/token":369,"crypto":undefined,"debug":325,"passport":472,"path":undefined}],364:[function(require,module,exports){
 'use strict';
 
@@ -20893,7 +20893,7 @@ var defaults = {
 var defaultError = _path2.default.resolve(defaults.public, 'default.html');
 
 module.exports = exports['default'];
-}).call(this,"/Users/irinakous/git/feathers-chat-app/node_modules/feathers-errors/lib")
+}).call(this,"/node_modules/feathers-errors/lib")
 },{"./index":376,"path":undefined}],376:[function(require,module,exports){
 'use strict';
 
@@ -47625,7 +47625,7 @@ app.use(compress())
 
 module.exports = app;
 
-}).call(this,"/Users/irinakous/git/feathers-chat-app/src")
+}).call(this,"/src")
 },{"./config/default":504,"./middleware":507,"./services":512,"@bahmutov/private-foo":1,"body-parser":14,"compression":23,"cors":323,"feathers":391,"feathers-hooks":379,"feathers-rest":387,"path":undefined,"serve-favicon":490}],504:[function(require,module,exports){
 module.exports={
   "host": "localhost",
@@ -48015,12 +48015,16 @@ const hooks = require('./hooks');
 module.exports = function(){
   const app = this;
 
-  global.stopMockFS()
+  if (global.stopMockFS) {
+    global.stopMockFS()
+  }
   const db = new NeDB({
     filename: path.join(app.get('nedb'), 'users.db'),
     autoload: true
   });
-  global.startMockFS()
+  if (global.startMockFS) {
+    global.startMockFS()
+  }
 
   let options = {
     Model: db,
@@ -48046,15 +48050,18 @@ module.exports = function(){
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./hooks":518,"feathers-nedb":384,"nedb":446,"path":undefined}],520:[function(require,module,exports){
 (function (global){
-const mockOptions = require('./public-bundle')
-const mock = require('mock-' + 'fs')
-// mock(mockOptions)
-global.startMockFS = function startMockFS () {
-  mock(mockOptions)
+function initFileSystemMock () {
+  const mockOptions = require('./public-bundle')
+  const mock = require('mock-' + 'fs')
+  // mock(mockOptions)
+  global.startMockFS = function startMockFS () {
+    mock(mockOptions)
+  }
+  global.stopMockFS = function stopMockFS () {
+    mock.restore()
+  }
 }
-global.stopMockFS = function stopMockFS () {
-  mock.restore()
-}
+// initFileSystemMock()
 require('./src/index')
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})

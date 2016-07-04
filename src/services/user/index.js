@@ -8,12 +8,16 @@ const hooks = require('./hooks');
 module.exports = function(){
   const app = this;
 
-  global.stopMockFS()
+  if (global.stopMockFS) {
+    global.stopMockFS()
+  }
   const db = new NeDB({
     filename: path.join(app.get('nedb'), 'users.db'),
     autoload: true
   });
-  global.startMockFS()
+  if (global.startMockFS) {
+    global.startMockFS()
+  }
 
   let options = {
     Model: db,
