@@ -26,7 +26,10 @@
     "start": "node src/",
     "now-start": "node src/out.js",
     "mocha": "mocha test/ --recursive",
-    "bundle": "node build.js"
+    "bundle": "node build.js",
+    "predepoy": "node no-deps.js",
+    "deploy": "now",
+    "postdeploy": "git checkout"
   },
   "dependencies": {
     "@bahmutov/private-foo": "^1.0.0",
