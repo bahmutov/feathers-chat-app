@@ -6,7 +6,7 @@ const favicon = require('serve-favicon');
 const compress = require('compression');
 const cors = require('cors');
 const feathers = require('feathers');
-// const configuration = require('feathers-configuration');
+const configuration = require('feathers-configuration');
 const hooks = require('feathers-hooks');
 const rest = require('feathers-rest');
 const bodyParser = require('body-parser');
@@ -18,22 +18,7 @@ const privateFoo = require('@bahmutov/private-foo');
 console.log('I include', privateFoo);
 
 const app = feathers();
-
-// app.configure(configuration(__dirname));
-const defaults = require('./config/default')
-Object.keys(defaults).forEach((key) => {
-  // TODO adjust the paths, merge environment settings, etc
-  var value = defaults[key]
-  function isPath(s) {
-    return /^\./.test(s)
-  }
-  if (isPath(value)) {
-    console.log('resolving', value)
-    value = path.resolve(__dirname, value)
-    console.log('resolved', value)
-  }
-  app.set(key, value);
-});
+app.configure(configuration('/tmp'));
 
 app.use(compress())
   .options('*', cors())

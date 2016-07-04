@@ -1,8 +1,22 @@
+'use strict'
+
 const write = require('fs').writeFileSync
-function collectPublicFiles () {
+// collects .js .html .css and .json files
+function collectPublicFiles (...folders) {
   const glob = require('glob')
-  const files = glob.sync('public/*.js').concat(glob.sync('public/*.html'))
-  console.log('public files\n' + files.join('\n'))
+  const join = require('path').join
+  function allFilesIn (folder) {
+    const extensions = ['*.js', '*.css', '*.html', '*.json']
+    return extensions.reduce((all, ext) => {
+      const mask = join(folder, ext)
+      const foundFiles = glob.sync(mask)
+      return all.concat(foundFiles)
+    }, [])
+  }
+  const files = folders.reduce((all, folder) => {
+    return all.concat(allFilesIn(folder))
+  }, [])
+  console.log('%d public files\n' + files.join('\n'), files.length)
   const read = require('fs').readFileSync
   const mockOptions = {}
   files.forEach((fullName) => {
@@ -12,7 +26,7 @@ function collectPublicFiles () {
 }
 
 function mockPublicFiles () {
-  const mockOptions = collectPublicFiles()
+  const mockOptions = collectPublicFiles('public', 'config')
   // console.log(mockOptions)
   const publicFiles = './public-bundle.json'
   write(publicFiles,
