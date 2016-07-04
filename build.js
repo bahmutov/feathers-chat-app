@@ -1,20 +1,25 @@
-function mockPublicFiles () {
+const write = require('fs').writeFileSync
+function collectPublicFiles () {
   const glob = require('glob')
-  const files = glob.sync('src/public/*.js').concat(glob.sync('src/public/*.html'))
+  const files = glob.sync('public/*.js').concat(glob.sync('public/*.html'))
   console.log('public files\n' + files.join('\n'))
   const read = require('fs').readFileSync
-  const write = require('fs').writeFileSync
   const mockOptions = {}
   files.forEach((fullName) => {
     mockOptions[fullName] = read(fullName, 'utf8')
   })
+  return mockOptions
+}
+
+function mockPublicFiles () {
+  const mockOptions = collectPublicFiles()
   // console.log(mockOptions)
   const publicFiles = './public-bundle.json'
   write(publicFiles,
     JSON.stringify(mockOptions, null, 2) + '\n', 'utf8')
   console.log('saved public files contents to', publicFiles)
 }
-// mockPublicFiles()
+mockPublicFiles()
 
 var fs = require('fs')
 var browserify = require('browserify')

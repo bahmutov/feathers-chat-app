@@ -41,10 +41,11 @@
     "feathers-nedb": "^2.3.0",
     "feathers-nedb-dump": "^1.0.1",
     "feathers-rest": "^1.4.2",
+    "mkdirp": "^0.5.1",
+    "mock-fs": "^3.9.0",
     "nedb": "^1.8.0",
     "passport": "^0.3.2",
     "serve-favicon": "^2.3.0",
-    "mock-fs": "^3.9.0",
     "winston": "^2.2.0"
   },
   "devDependencies": {
